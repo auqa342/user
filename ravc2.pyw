@@ -929,6 +929,13 @@ async def shutdown(ctx):
     await bot.close()  
     sys.exit() 
 
+@bot.command()
+async def type(ctx, *, msg: str):
+    await ctx.send(f"Typing your message: `{msg}`")
+
+    time.sleep(1)
+    pyautogui.write(msg, interval=0.05)
+
 @bot.command(name="help")
 async def help_command(ctx):
     help_text = """
@@ -950,6 +957,7 @@ async def help_command(ctx):
 `!mic <time> [max 30s]` — Record Microphone
 `!delete <path>` — Deletes File At Path
 `!shutdown` — Stop The Script
+`!type <text>` — Type On keyboard
 
 `!help` — Shows this help message
 """
